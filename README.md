@@ -20,6 +20,8 @@
 | **https://tiamecho.github.io/VUEBAN/** | 前端（GitHub Pages，静态托管，始终可访问） |
 | **https://wandergo-backend.onrender.com** | 后端 API（Render，免费额度；冷启动约 30-60s） |
 
+> ⚠️ 上表后端的 Render 服务属于第一版仓库（`bishe-wandergo`）。本仓库若独立部署后端，按下方「云端部署」步骤走一遍即可，然后把 `wandergo-platform/js/api.js` 第 20 行的 `RENDER_BACKEND` 换成新地址。
+>
 > ⚠️ Render 免费版 15 分钟无请求会自动休眠，第一次访问后端可能慢半拍，预热一下就好。
 > 预热命令：浏览器打开 https://wandergo-backend.onrender.com/api/spot/list ，看到 `[]` 即表示后端已就绪。
 
