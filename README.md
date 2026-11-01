@@ -1,6 +1,6 @@
 # WanderGo · 旅游打卡分享平台（毕业设计）
 
-[![Frontend](https://img.shields.io/badge/Frontend-GitHub%20Pages-2ea44f?logo=github)](https://tiamecho.github.io/bishe-wandergo/)
+[![Frontend](https://img.shields.io/badge/Frontend-GitHub%20Pages-2ea44f?logo=github)](https://tiamecho.github.io/VUEBAN/)
 [![Backend](https://img.shields.io/badge/Backend-Render-46e14b?logo=render)](https://wandergo-backend.onrender.com)
 [![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk)](https://www.oracle.com/java/technologies/downloads/)
 [![Spring](https://img.shields.io/badge/Spring%20Boot-3.2-6DB33F?logo=spring)](https://spring.io/)
@@ -10,12 +10,14 @@
 > 基于 **Vue 3 + Spring Boot 3 + MySQL 8 + 协同过滤推荐算法** 的旅游打卡分享平台。
 >
 > 🎓 **毕业设计** · 2026 · 包含完整爬虫与自动化建库
+>
+> 📌 本仓库为**第二版（VUEBAN）**：技术栈与开题报告完全一致，前端 MPA + Vue 3 岛屿、后端 Spring Boot 3 + MyBatis-Plus + JWT、数据库 MySQL 8。
 
 ## 🔗 在线访问
 
 | 地址 | 说明 |
 |---|---|
-| **https://tiamecho.github.io/bishe-wandergo/** | 前端（GitHub Pages，静态托管，始终可访问） |
+| **https://tiamecho.github.io/VUEBAN/** | 前端（GitHub Pages，静态托管，始终可访问） |
 | **https://wandergo-backend.onrender.com** | 后端 API（Render，免费额度；冷启动约 30-60s） |
 
 > ⚠️ Render 免费版 15 分钟无请求会自动休眠，第一次访问后端可能慢半拍，预热一下就好。
@@ -24,7 +26,7 @@
 ## 📂 仓库结构
 
 ```
-bishe-wandergo/
+VUEBAN/
 ├── README.md                  # 本文件
 ├── render.yaml                # Render 一键部署配置
 ├── wandergo-platform/         # 前端：MPA + Vue 3 岛屿 + ECharts 3D 地图
@@ -62,6 +64,61 @@ cd wandergo-platform && python -m http.server 8766
 cd wandergo-crawler && pip install -r requirements.txt && python crawler.py
 ```
 
+### 本机环境（Windows）
+
+本机已装好 JDK 17 与 Maven，未加入系统 PATH，需显式指定：
+
+```powershell
+$env:JAVA_HOME = "C:\Users\Administrator\.jdks\ms-17.0.20.1"
+$mvn = "C:\Users\Administrator\.trae-maven\apache-maven-3.9.9\bin\mvn.cmd"
+```
+
+### 数据库准备（MySQL 8）
+
+```powershell
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS wandergo DEFAULT CHARSET utf8mb4;"
+mysql -u root -p wandergo < wandergo-db\wandergo.sql
+mysql -u root -p wandergo < wandergo-db\upgrade_admin.sql
+```
+
+默认连接串在 `wandergo-backend/src/main/resources/application.yml`，账号 `root/root`。
+若密码不同，启动前设置环境变量：
+
+```powershell
+$env:MYSQL_PASSWORD = "你的密码"
+```
+
+### 启动后端
+
+```powershell
+& $mvn -f wandergo-backend\pom.xml -B -DskipTests clean package
+& "$env:JAVA_HOME\bin\java.exe" -jar wandergo-backend\target\wandergo-backend-1.0.0.jar
+```
+
+看到 `Started WandergoApplication` 即成功。验证：
+
+```powershell
+Invoke-RestMethod http://localhost:8080/api/spot/list
+```
+
+### 启动前端
+
+```powershell
+cd wandergo-platform
+python -m http.server 8766
+```
+
+打开 http://localhost:8766 。前端已在 `js/lib/` 内置 Vue 3 与 Axios，**无需 npm install，断网也能跑**。
+
+### 前后端接口约定
+
+前端 `wandergo-platform/js/api.js` 会自动判断运行环境：
+
+- `localhost` 访问 → 请求 `http://localhost:8080`
+- 线上访问 → 请求 Render 后端
+
+本机联调时后端必须先在 8080 起来，否则页面数据为空。
+
 ## 🌐 云端部署（Render 免费）
 
 后端也想在线跑起来？用 Render 免费版，5 分钟搞定，完全自动化。
@@ -91,7 +148,7 @@ mysql -h <RENDER_HOST> -u <USER> -p wandergo < wandergo-crawler\seed_spots.sql
 
 ### Step 4：建 Web Service（后端）
 
-1. Dashboard → `New` → `Web Service` → 选 **Connect a repository** → 选 `TiamEcho/bishe-wandergo`
+1. Dashboard → `New` → `Web Service` → 选 **Connect a repository** → 选 `TiamEcho/VUEBAN`
 2. Build Command：`mvn -B -DskipTests clean package`
 3. Start Command：`java -jar target/*.jar`
 4. Root Directory：`wandergo-backend`
@@ -122,11 +179,8 @@ git add wandergo-platform/js/api.js
 git commit -m "chore: 前端指向 Render 后端"
 git push origin main
 
-# 更新 gh-pages
-cd D:\Documents\bishe-wandergo-pages
-git add -A
-git commit -m "sync: api.js 指向新后端"
-git push origin gh-pages
+# 更新 gh-pages（本仓库已内置 gh-pages 分支）
+git subtree push --prefix wandergo-platform origin gh-pages
 ```
 
 ## 🛠 技术栈

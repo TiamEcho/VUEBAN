@@ -56,6 +56,27 @@ CREATE TABLE t_rating_record (
   UNIQUE KEY uk_user_spot (nick, spot_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- 评论表（管理端内容审核对象，status: 0 待审 / 1 通过 / 2 驳回）
+CREATE TABLE IF NOT EXISTS t_comment (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  spot_id VARCHAR(64) NOT NULL,
+  nick VARCHAR(64) NOT NULL,
+  content VARCHAR(500) NOT NULL,
+  status TINYINT DEFAULT 0,
+  created_at VARCHAR(32),
+  KEY idx_spot (spot_id),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 点赞表
+CREATE TABLE IF NOT EXISTS t_like (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  nick VARCHAR(64) NOT NULL,
+  spot_id VARCHAR(64) NOT NULL,
+  created_at VARCHAR(32),
+  UNIQUE KEY uk_nick_spot (nick, spot_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- ============ 种子数据 ============
 INSERT INTO t_user (username,password,avatar) VALUES
 ('青柠汽水','e10adc3949ba59abbe56e057f20f883e'),('慢半拍','e10adc3949ba59abbe56e057f20f883e'),('苍山雪','e10adc3949ba59abbe56e057f20f883e'),('城墙根','e10adc3949ba59abbe56e057f20f883e'),('海岛控Mia','e10adc3949ba59abbe56e057f20f883e'),('极光猎人','e10adc3949ba59abbe56e057f20f883e');

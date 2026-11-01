@@ -9,6 +9,7 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+pip-selfcheck.json
 
 # Node（如后续引入）
 node_modules/
@@ -23,3 +24,4 @@ Thumbs.db
 # 日志与临时
 *.log
 *.tmp
+_.*.sql
